@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Klaro Cookie Consent CSS */
+@import url('https://cdn.jsdelivr.net/npm/klaro@0.7.18/dist/klaro.min.css');
+
+@layer base {
+  :root {
+    --tattoo-primary: #be9d88;
+    --tattoo-secondary: #ddccbd;
+    --tattoo-light: #f0f0f0;
+    --tattoo-grey: #cdcdcd;
+    /* Keep barber vars for backward compatibility */
+    --barber-red: #be9d88;
+    --barber-dark-red: #ddccbd;
+    --barber-gold: #be9d88;
+  }
+
+  body {
+    @apply bg-tattoo-light text-tattoo-black antialiased;
+  }
+
+  * {
+    @apply focus-visible:outline-tattoo-primary focus-visible:outline-2 focus-visible:outline-offset-2;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
