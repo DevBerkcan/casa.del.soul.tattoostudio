@@ -157,10 +157,10 @@ export default function ConfirmationPage({ params }: { params: { id: string } })
                 <div className="flex-1">
                   <div className="text-sm text-barber-grey-600 mb-1">Standort</div>
                   <div className="font-semibold text-barber-black">
-                    Barber Dario
+                    Casa del soul Tattoostudio
                   </div>
                   <div className="text-barber-grey-700">
-                    Berliner Allee 43, 40212 Düsseldorf
+                    Holsterhauser Str. 79, Essen, Nordrhein-Westfalen 45147
                   </div>
                 </div>
               </div>

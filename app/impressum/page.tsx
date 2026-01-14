@@ -2,8 +2,8 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata = {
-  title: "Impressum - Barber Dario",
-  description: "Impressum und Kontaktdaten von Barber Dario",
+  title: "Impressum -  Casa del soul tattoostudio",
+  description: "Impressum und Kontaktdaten von Casa del soul tattoostudio",
 };
 
 export default function ImpressumPage() {
@@ -27,10 +27,10 @@ export default function ImpressumPage() {
             <section>
               <h2 className="text-2xl font-bold text-barber-black mb-4">Angaben gemäß § 5 TMG</h2>
               <p className="mb-2">
-                <strong>Barber Dario</strong>
+                <strong> Casa del soul tattoostudio</strong>
               </p>
-              <p>Berliner Allee 43</p>
-              <p>40212 Düsseldorf</p>
+              <p>Holsterhauser Str. 79</p>
+              <p>45147 Essen</p>
             </section>
 
             <section>

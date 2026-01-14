@@ -75,7 +75,7 @@ export const ProfileCard = () => {
       >
         <Image
           src="/logo.jpg"
-          alt="Barber Dario Logo"
+          alt="Casa del soul tattoostudio Logo"
           width={96}
           height={96}
           className="h-full w-full object-cover"

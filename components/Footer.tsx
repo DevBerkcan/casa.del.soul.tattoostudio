@@ -72,7 +72,7 @@ export const Footer = () => {
 
       {/* Copyright */}
       <p className="text-xs text-barber-grey-400">
-        © {new Date().getFullYear()} Barber Dario. Alle Rechte vorbehalten.
+        © {new Date().getFullYear()} Casa del soul tattoostudio. Alle Rechte vorbehalten.
       </p>
     </motion.footer>
   );

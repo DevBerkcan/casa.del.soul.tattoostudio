@@ -2,8 +2,8 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata = {
-  title: "Datenschutzerklärung - Barber Dario",
-  description: "Datenschutzerklärung von Barber Dario",
+  title: "Datenschutzerklärung -  Casa del soul tattoostudio",
+  description: "Datenschutzerklärung von Casa del soul tattoostudio",
 };
 
 export default function DatenschutzPage() {
