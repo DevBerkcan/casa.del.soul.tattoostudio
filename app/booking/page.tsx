@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@nextui-org/button";
-import { ChevronLeft, Check, Home } from "lucide-react";
+import { ChevronLeft, Check, Home, Instagram } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Card, CardBody } from "@nextui-org/card";
 
-import { ArtistSelector } from "@/components/booking/ArtistSelector";
 import { ServiceSelector } from "@/components/booking/ServiceSelector";
 import { DateTimePicker } from "@/components/booking/DateTimePicker";
 import { ContactForm } from "@/components/booking/ContactForm";
@@ -27,12 +27,12 @@ import { BookingEvents, getTrackingData } from "@/lib/tracking";
 export default function BookingPage() {
   const router = useRouter();
 
-  // Step Management (4 steps now: Artist -> Service -> Date/Time -> Contact)
+  // Step Management (3 steps: Artist+Service -> Date/Time -> Contact)
   const [currentStep, setCurrentStep] = useState(1);
 
   // Track step changes
   useEffect(() => {
-    if (currentStep === 4) {
+    if (currentStep === 3) {
       BookingEvents.customerDataEntered();
     }
   }, [currentStep]);
@@ -116,6 +116,7 @@ export default function BookingPage() {
   const handleArtistSelect = (artist: Artist) => {
     setSelectedArtist(artist);
     // Reset following selections when artist changes
+    setSelectedService(null);
     setSelectedDate(null);
     setSelectedTime(null);
     setAvailableSlots([]);
@@ -188,12 +189,10 @@ export default function BookingPage() {
   const canProceed = () => {
     switch (currentStep) {
       case 1:
-        return selectedArtist !== null;
+        return selectedArtist !== null && selectedService !== null;
       case 2:
-        return selectedService !== null;
-      case 3:
         return selectedDate !== null && selectedTime !== null;
-      case 4:
+      case 3:
         return (
           customerInfo.firstName.trim() !== "" &&
           customerInfo.lastName.trim() !== "" &&
@@ -208,7 +207,7 @@ export default function BookingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-tattoo-light via-tattoo-secondary to-white">
-      <div className="max-w-3xl mx-auto px-4 py-12">
+      <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Back to Home Button */}
         <Link
           href="/"
@@ -218,10 +217,10 @@ export default function BookingPage() {
           <span>Zurück zur Startseite</span>
         </Link>
 
-        {/* Progress Stepper - Now 4 steps */}
+        {/* Progress Stepper - 3 steps */}
         <div className="mb-8">
           <div className="flex justify-center items-center gap-2">
-            {[1, 2, 3, 4].map((step) => (
+            {[1, 2, 3].map((step) => (
               <div key={step} className="flex items-center">
                 <div
                   className={`
@@ -237,7 +236,7 @@ export default function BookingPage() {
                 >
                   {currentStep > step ? <Check size={20} /> : step}
                 </div>
-                {step < 4 && (
+                {step < 3 && (
                   <div
                     className={`w-12 h-1 mx-1 rounded transition-all ${
                       currentStep > step ? "bg-tattoo-primary" : "bg-tattoo-greyScale-200"
@@ -250,10 +249,9 @@ export default function BookingPage() {
           {/* Step Labels */}
           <div className="flex justify-center items-center gap-2 mt-2">
             <p className="text-xs text-tattoo-greyScale-600 text-center">
-              {currentStep === 1 && "Artist wählen"}
-              {currentStep === 2 && "Service wählen"}
-              {currentStep === 3 && "Termin wählen"}
-              {currentStep === 4 && "Kontaktdaten"}
+              {currentStep === 1 && "Artist & Service wählen"}
+              {currentStep === 2 && "Termin wählen"}
+              {currentStep === 3 && "Kontaktdaten"}
             </p>
           </div>
         </div>
@@ -275,7 +273,7 @@ export default function BookingPage() {
         {/* Main Content Card */}
         <div className="bg-white rounded-3xl shadow-2xl p-8 ring-1 ring-tattoo-greyScale-100">
           <AnimatePresence mode="wait">
-            {/* Step 1: Artist Selection */}
+            {/* Step 1: Artist & Service Selection */}
             {currentStep === 1 && (
               <motion.div
                 key="step1"
@@ -283,34 +281,132 @@ export default function BookingPage() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
               >
-                <ArtistSelector
-                  artists={artists}
-                  selectedArtist={selectedArtist}
-                  onSelect={handleArtistSelect}
-                />
+                {/* Artists */}
+                <div className="mb-8">
+                  <h2 className="text-3xl font-bold text-tattoo-black mb-2">
+                    Wähle deinen Artist
+                  </h2>
+                  <p className="text-tattoo-greyScale-500 mb-6">
+                    Unsere talentierten Tattoo-Artists freuen sich auf dich
+                  </p>
+
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {artists.map((artist, index) => (
+                      <motion.div
+                        key={artist.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                      >
+                        <Card
+                          isPressable
+                          onPress={() => handleArtistSelect(artist)}
+                          className={`
+                            transition-all duration-300 cursor-pointer
+                            ${
+                              selectedArtist?.id === artist.id
+                                ? "ring-2 ring-tattoo-primary shadow-lg scale-[1.02]"
+                                : "hover:shadow-md hover:scale-[1.01]"
+                            }
+                          `}
+                        >
+                          <CardBody className="p-4">
+                            {/* Artist Photo */}
+                            <div className="w-full aspect-square rounded-xl bg-tattoo-light mb-3 overflow-hidden">
+                              {artist.profileImageUrl ? (
+                                <img
+                                  src={artist.profileImageUrl}
+                                  alt={artist.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-tattoo-greyScale-400">
+                                  <span className="text-4xl font-bold">
+                                    {artist.name.charAt(0)}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Artist Info */}
+                            <div>
+                              <div className="flex items-center justify-between mb-1">
+                                <h3 className="text-base font-bold text-tattoo-black truncate">
+                                  {artist.name}
+                                </h3>
+                                {artist.isChef && (
+                                  <span className="px-1.5 py-0.5 bg-tattoo-primary/10 text-tattoo-primary text-xs font-semibold rounded">
+                                    Chef
+                                  </span>
+                                )}
+                              </div>
+
+                              <a
+                                href={`https://www.instagram.com/${artist.instagramHandle.replace("@", "")}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-tattoo-greyScale-500 hover:text-tattoo-primary text-xs mb-2 transition-colors"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Instagram size={12} />
+                                <span className="truncate">{artist.instagramHandle}</span>
+                              </a>
+
+                              {artist.specialties && (
+                                <p className="text-xs text-tattoo-greyScale-500 line-clamp-2">
+                                  {artist.specialties}
+                                </p>
+                              )}
+                            </div>
+
+                            {/* Selection Indicator */}
+                            {selectedArtist?.id === artist.id && (
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                className="absolute top-2 right-2 w-6 h-6 rounded-full bg-tattoo-primary flex items-center justify-center"
+                              >
+                                <Check className="w-4 h-4 text-white" />
+                              </motion.div>
+                            )}
+                          </CardBody>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Services - Only show when artist is selected */}
+                <AnimatePresence>
+                  {selectedArtist && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="border-t border-tattoo-greyScale-200 pt-8"
+                    >
+                      <h2 className="text-3xl font-bold text-tattoo-black mb-2">
+                        Wähle deinen Service
+                      </h2>
+                      <p className="text-tattoo-greyScale-500 mb-6">
+                        Was möchtest du bei {selectedArtist.name} machen?
+                      </p>
+                      <ServiceSelector
+                        services={services}
+                        selectedService={selectedService}
+                        onSelect={handleServiceSelect}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             )}
 
-            {/* Step 2: Service Selection */}
-            {currentStep === 2 && (
+            {/* Step 2: Date & Time Selection */}
+            {currentStep === 2 && selectedService && (
               <motion.div
                 key="step2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-              >
-                <ServiceSelector
-                  services={services}
-                  selectedService={selectedService}
-                  onSelect={handleServiceSelect}
-                />
-              </motion.div>
-            )}
-
-            {/* Step 3: Date & Time Selection */}
-            {currentStep === 3 && selectedService && (
-              <motion.div
-                key="step3"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
@@ -328,10 +424,10 @@ export default function BookingPage() {
               </motion.div>
             )}
 
-            {/* Step 4: Contact Form */}
-            {currentStep === 4 && selectedService && selectedDate && selectedTime && (
+            {/* Step 3: Contact Form */}
+            {currentStep === 3 && selectedService && selectedDate && selectedTime && (
               <motion.div
-                key="step4"
+                key="step3"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
@@ -365,7 +461,7 @@ export default function BookingPage() {
             <div />
           )}
 
-          {currentStep < 4 ? (
+          {currentStep < 3 ? (
             <Button
               onPress={() => setCurrentStep(currentStep + 1)}
               isDisabled={!canProceed()}
