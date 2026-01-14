@@ -90,7 +90,7 @@ export const ProfileCard = () => {
         transition={{ delay: 0.3 }}
         className="mb-3 text-3xl font-extrabold tracking-tight text-barber-black"
       >
-        BARBER DARIO<span className="text-barber-red">.</span>
+        Casa del soul tattoostudio<span className="text-barber-red">.</span>
       </motion.h1>
 
       {/* Subtitle */}
@@ -100,7 +100,7 @@ export const ProfileCard = () => {
         transition={{ delay: 0.4 }}
         className="mb-4 px-4 text-base text-barber-grey-600 text-balance"
       >
-        Dein Barber & Hairstylist – moderne Cuts, Fades & Bartpflege
+        Dein kreatives Tattoostudio in Essen
       </motion.p>
 
       {/* Location & Booking Info */}
@@ -112,7 +112,7 @@ export const ProfileCard = () => {
       >
         <div className="flex items-center gap-2">
           <span className="inline-block h-1.5 w-1.5 rounded-full bg-barber-red" />
-          <span>Berliner Allee 43, Düsseldorf</span>
+          <span>Holsterhauser Str. 79, Essen</span>
         </div>
         <span className="text-xs">Termin nur mit Online-Buchung</span>
       </motion.div>
