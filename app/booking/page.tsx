@@ -29,6 +29,7 @@ export default function BookingPage() {
 
   // Step Management (3 steps: Artist+Service -> Date/Time -> Contact)
   const [currentStep, setCurrentStep] = useState(1);
+  const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward
 
   // Track step changes
   useEffect(() => {
@@ -36,6 +37,17 @@ export default function BookingPage() {
       BookingEvents.customerDataEntered();
     }
   }, [currentStep]);
+
+  // Handle step navigation with direction
+  const goToNextStep = () => {
+    setDirection(1);
+    setCurrentStep(currentStep + 1);
+  };
+
+  const goToPrevStep = () => {
+    setDirection(-1);
+    setCurrentStep(currentStep - 1);
+  };
 
   // Artists
   const [artists, setArtists] = useState<Artist[]>([]);
@@ -272,14 +284,16 @@ export default function BookingPage() {
 
         {/* Main Content Card */}
         <div className="bg-white rounded-3xl shadow-2xl p-8 ring-1 ring-tattoo-greyScale-100">
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" custom={direction}>
             {/* Step 1: Artist & Service Selection */}
             {currentStep === 1 && (
               <motion.div
                 key="step1"
-                initial={{ opacity: 0, x: 20 }}
+                custom={direction}
+                initial={{ opacity: 0, x: direction > 0 ? 300 : -300 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: direction > 0 ? -300 : 300 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
               >
                 {/* Artists */}
                 <div className="mb-8">
@@ -407,9 +421,11 @@ export default function BookingPage() {
             {currentStep === 2 && selectedService && (
               <motion.div
                 key="step2"
-                initial={{ opacity: 0, x: 20 }}
+                custom={direction}
+                initial={{ opacity: 0, x: direction > 0 ? 300 : -300 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: direction > 0 ? -300 : 300 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
               >
                 <DateTimePicker
                   service={selectedService}
@@ -428,9 +444,11 @@ export default function BookingPage() {
             {currentStep === 3 && selectedService && selectedDate && selectedTime && (
               <motion.div
                 key="step3"
-                initial={{ opacity: 0, x: 20 }}
+                custom={direction}
+                initial={{ opacity: 0, x: direction > 0 ? 300 : -300 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: direction > 0 ? -300 : 300 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
               >
                 <ContactForm
                   service={selectedService}
@@ -451,7 +469,7 @@ export default function BookingPage() {
           {currentStep > 1 ? (
             <Button
               variant="flat"
-              onPress={() => setCurrentStep(currentStep - 1)}
+              onPress={goToPrevStep}
               startContent={<ChevronLeft size={20} />}
               className="bg-tattoo-greyScale-100 font-semibold"
             >
@@ -463,7 +481,7 @@ export default function BookingPage() {
 
           {currentStep < 3 ? (
             <Button
-              onPress={() => setCurrentStep(currentStep + 1)}
+              onPress={goToNextStep}
               isDisabled={!canProceed()}
               className="bg-gradient-to-r from-tattoo-primary to-tattoo-secondary text-white font-semibold px-8"
             >
